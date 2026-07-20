@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>小宇宙播客处理器</title>
+    <link rel="stylesheet" href="sidepanel.css">
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div class="brand-mark" aria-hidden="true">◉</div>
+        <div>
+          <h1>小宇宙播客处理器</h1>
+          <p>下载 · 裁剪 · 变速 · 调音量</p>
+        </div>
+        <span id="hostBadge" class="badge checking">检测中</span>
+      </header>
+
+      <section class="card episode-card">
+        <label for="episodeUrl">Episode 链接</label>
+        <div class="inline-row">
+          <input id="episodeUrl" type="url" placeholder="打开小宇宙单集页面" spellcheck="false">
+          <button id="parseButton" class="secondary">解析</button>
+        </div>
+        <div id="episodeInfo" class="episode-info hidden">
+          <img id="cover" alt="播客封面">
+          <div>
+            <strong id="episodeTitle"></strong>
+            <span id="episodeDuration"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>处理参数</h2>
+        <div class="form-grid time-grid">
+          <label>开始时间
+            <input id="startTime" type="text" value="00:00:00" inputmode="numeric" placeholder="HH:MM:SS">
+          </label>
+          <label>结束时间
+            <input id="endTime" type="text" value="00:00:00" inputmode="numeric" placeholder="HH:MM:SS">
+          </label>
+        </div>
+        <div class="form-grid">
+          <label>倍速（不变调）
+            <input id="speed" type="number" min="0.5" max="3" step="0.1" value="1.0">
+          </label>
+          <label>音量
+            <div class="unit-input">
+              <input id="volume" type="number" min="0.1" max="3" step="0.1" value="1.0">
+              <span>×</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>输出</h2>
+        <label for="outputDir">保存目录</label>
+        <div class="inline-row">
+          <input id="outputDir" type="text" spellcheck="false">
+          <button id="browseButton" class="secondary">浏览…</button>
+        </div>
+        <label for="filename">文件名</label>
+        <input id="filename" type="text" placeholder="留空则使用节目标题" maxlength="100">
+      </section>
+
+      <section class="actions">
+        <button id="downloadButton" class="primary" disabled>下载并处理</button>
+        <button id="cancelButton" class="danger hidden">取消任务</button>
+        <button id="openTaskCenterButton" class="secondary" type="button" disabled>打开本地任务中心</button>
+      </section>
+
+      <section id="progressSection" class="progress-section hidden" aria-live="polite">
+        <div class="progress-header">
+          <span id="statusText">准备中…</span>
+          <span id="progressText">0%</span>
+        </div>
+        <progress id="progressBar" max="100" value="0"></progress>
+        <button id="openFolderButton" class="link-button hidden">打开保存目录</button>
+      </section>
+
+      <p id="errorText" class="error hidden" role="alert"></p>
+      <footer>输出格式：MP3 · 192 kbps</footer>
+    </main>
+    <script src="job-state.js"></script>
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

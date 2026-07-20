@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "小宇宙播客处理器",
+  "version": "1.0.0",
+  "description": "在小宇宙单集页面下载、裁剪、变速和调整音量。",
+  "minimum_chrome_version": "114",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvq4eS3k+AvbtJP9hMZPTF1ZVt4YpN7CVPeBAzjz/zHVeWLqErnyL8LDjNeuW8dAR+mNDDB7M9wlLPS8jbyRohR3UvKgwNGQW7D2jxa3ZvL9BSckYL7b4G44r5aDCeXPAiRsqX7AR/v1A+VtDUSpI50ZYHjAHDkIA7J05NaU3koUT8MmAW8MP8jHYfxfjaa+E9AhQFr2vIcOkNst7TMVNSVMjlkQgq2T6tFUaM+Lxy5k6Iwbya51dG6lrnV68dcanNqMAnwSq6yuX0J1TTHVrH3sHC6HQzWzVgEigUvX0GRhtmzzZCibxhX9xlpGYsY/SEkXu6UDoy97cZ6SMn6+8nQIDAQAB",
+  "permissions": [
+    "nativeMessaging",
+    "sidePanel",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.xiaoyuzhoufm.com/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_title": "打开小宇宙播客处理器"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}

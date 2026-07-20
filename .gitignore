@@ -30,3 +30,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Local development handoff and agent artifacts
+.grok/
+.handoff/
