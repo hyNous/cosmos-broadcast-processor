@@ -1,0 +1,72 @@
+小宇宙播客处理器 — 快速开始（Windows 10/11）
+========================================
+
+本文件夹是完整解压后的安装包。请勿只复制其中几个文件。
+
+需要：Google Chrome 或 Microsoft Edge；不需要管理员权限。
+
+一、安装 FFmpeg（处理音频必需）
+--------------------------------
+1. 打开 PowerShell，执行：
+
+   winget install --id Gyan.FFmpeg --exact --accept-source-agreements --accept-package-agreements
+
+2. 关闭并重新打开 PowerShell，确认：
+
+   ffmpeg -version
+   ffprobe -version
+
+二、安装本地辅助程序
+--------------------
+1. 双击本目录中的「安装本地程序.cmd」。
+2. 若出现 SmartScreen / 未知发布者提示：选择「更多信息」→「仍要运行」。
+3. 看到成功提示后，按任意键关闭窗口（退出码应为 0）。
+
+三、加载浏览器扩展
+------------------
+1. Chrome 打开：  chrome://extensions
+   Edge   打开：  edge://extensions
+2. 打开右上角「开发者模式」。
+3. 点击「加载已解压的扩展程序」，选择本目录下的 extension 文件夹。
+4. 扩展 ID 应为：hjccjnbenicffglhjkjgoecbfdjfmafh
+
+四、完全退出并重启浏览器
+------------------------
+关闭所有 Chrome / Edge 窗口后再打开。
+
+五、第一次下载
+--------------
+1. 打开小宇宙单集页（地址必须包含 /episode/），例如：
+   https://www.xiaoyuzhoufm.com/episode/...
+2. 点击扩展图标，在侧边栏设置参数，点击下载并处理。
+3. 会弹出本地任务窗口显示进度。
+4. 成功后：输出目录只留下 MP3；任务状态与临时文件会自动删除。
+
+升级
+----
+1. 先等待所有下载任务结束。
+2. 用新版本 ZIP 覆盖解压（或解压到新目录）。
+3. 再双击一次「安装本地程序.cmd」。
+4. 在扩展管理页重新加载扩展（或重新加载 extension 文件夹）。
+5. 完全退出并重启浏览器。
+
+卸载
+----
+1. 双击「卸载本地程序.cmd」。
+2. 在浏览器扩展管理页移除本扩展。
+   卸载不会删除你已经下载好的 MP3。
+
+常见问题
+--------
+- 连不上本地程序：确认扩展 ID、重新运行安装 CMD、完全重启浏览器。
+- 找不到 FFmpeg：重新安装并确认 PATH，然后重启浏览器。
+- 扩展加载失败：确认 ZIP 已完整解压，选择的是 extension 文件夹。
+- 当前页扩展不可用：必须是 https 的 /episode/ 单集页。
+- 关闭侧栏后看不到旧任务：这是预期行为（一次性任务，不保存历史）。
+
+项目主页：https://github.com/hyNous/cosmos-broadcast-processor
+最新下载：https://github.com/hyNous/cosmos-broadcast-processor/releases/latest
+Assets 中下载：cosmos-broadcast-processor-windows-v1.0.0.zip
+（不要下载 GitHub 自动生成的 Source code。）
+
+许可证：MIT

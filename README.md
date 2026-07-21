@@ -1,16 +1,120 @@
 # 小宇宙播客处理器
 
-在 Chrome 或 Edge 打开小宇宙单集页面，通过浏览器侧边栏下载并处理音频。项目仍保留原来的 PyQt6 桌面版；新增的浏览器扩展沿用相同参数和 FFmpeg 输出规则。
+在 Windows 上用 Chrome 或 Edge，从[小宇宙](https://www.xiaoyuzhoufm.com/)单集页面下载并处理音频（裁剪、倍速、音量），输出 MP3。本项目提供浏览器扩展 + 本地辅助程序；成功后输出目录**只保留你选择位置的 MP3**，不保留任务历史或运行日志。
 
 项目主页：[hyNous/cosmos-broadcast-processor](https://github.com/hyNous/cosmos-broadcast-processor)
 
-浏览器提交下载任务后，会为**该任务**自动打开一个独立的 **Windows 本地任务窗口**（控制台），只显示该 `job_id` 的实时状态与四阶段进度。并发任务可各自有窗口。关闭网页或侧边栏不会中断后台 worker；关闭任务窗口也只关掉监控界面，不会取消正在下载的 worker。
-
-**一次性任务生命周期：** 任务运行期间保留必要状态；成功、失败或取消后会短暂展示最终结果，随后自动删除该任务的状态文件与临时文件，任务窗口自动退出。成功时最终只保留你选择目录中的 MP3；不会生成运行日志、历史清单或可回溯任务记录。
-
 > 仅用于你有权保存的公开内容。请遵守小宇宙服务条款、节目版权和所在地法律，不要批量抓取或传播受限内容。
 
-## 功能
+---
+
+## 普通用户下载（Windows）
+
+1. 打开最新发布页：
+   **[https://github.com/hyNous/cosmos-broadcast-processor/releases/latest](https://github.com/hyNous/cosmos-broadcast-processor/releases/latest)**
+2. 在 **Assets** 中下载：
+   **`cosmos-broadcast-processor-windows-v1.0.0.zip`**
+3. **不要**下载 GitHub 自动生成的 “Source code (zip/tar.gz)”——那是源码，不是安装包。
+
+将 ZIP **完整解压**到任意文件夹（例如桌面），保持文件夹结构不要只解压其中几个文件。
+
+---
+
+## 零基础安装（Windows 10/11）
+
+适用浏览器：**Google Chrome** 或 **Microsoft Edge**。不需要管理员权限。
+
+### 步骤 1：安装 FFmpeg（处理音频必需）
+
+在 PowerShell 中执行（推荐，自动加入 PATH）：
+
+```powershell
+winget install --id Gyan.FFmpeg --exact --accept-source-agreements --accept-package-agreements
+```
+
+安装后**新开**一个 PowerShell 窗口，确认两条命令都能输出版本：
+
+```powershell
+ffmpeg -version
+ffprobe -version
+```
+
+### 步骤 2：安装本地辅助程序
+
+1. 打开刚才解压出来的文件夹（应能看到 `安装本地程序.cmd` 和 `extension`、`native_host` 等）。
+2. **双击** `安装本地程序.cmd`。
+3. 若 Windows / SmartScreen 提示“未知发布者”或拦截未签名程序：选择**更多信息 → 仍要运行**（本发布包 EXE 未做代码签名，属正常现象）。
+4. 窗口显示成功后，按任意键关闭；记下退出码应为 `0`。
+
+### 步骤 3：加载浏览器扩展
+
+1. Chrome 地址栏打开 `chrome://extensions`，或 Edge 打开 `edge://extensions`。
+2. 打开右上角 **开发者模式**。
+3. 点击 **加载已解压的扩展程序**，选择解压目录里的 **`extension`** 文件夹（选中该文件夹本身，不要只选里面的某个文件）。
+4. 扩展详情中显示的 ID 应为：`hjccjnbenicffglhjkjgoecbfdjfmafh`。
+
+### 步骤 4：完全退出并重启浏览器
+
+关闭所有 Chrome / Edge 窗口后重新打开，让新注册的本地程序生效。
+
+### 步骤 5：第一次下载
+
+1. 打开任意小宇宙**单集**页，地址形如：
+   `https://www.xiaoyuzhoufm.com/episode/...`
+   （必须是 `/episode/` 单集，不是播客主页。）
+2. 点击浏览器工具栏中的扩展图标，侧边栏会解析当前页面。
+3. 按需设置裁剪时间、倍速、音量、输出目录和文件名，点击**下载并处理**。
+4. 会弹出一个**仅针对当前任务**的本地控制台窗口，显示四阶段进度。
+5. 成功后：你选择的输出目录里**只留下 MP3**；任务状态与临时文件会被自动删除，终端短暂展示结果后自动关闭。
+
+---
+
+## 升级 / 卸载
+
+### 升级
+
+1. **先等待所有正在进行的下载任务结束**（升级安装会清理旧任务状态文件，不会删你的 MP3）。
+2. 下载新版本统一 ZIP，**覆盖解压**到同一位置（或解压到新目录）。
+3. 再双击一次 `安装本地程序.cmd`。
+4. 若扩展文件有更新：在扩展管理页对已加载扩展点**重新加载**，或移除后重新「加载已解压的扩展程序」指向新的 `extension` 文件夹。
+5. 完全退出并重启浏览器。
+
+### 卸载
+
+1. 双击解压目录中的 `卸载本地程序.cmd`（会注销当前用户的 Native Messaging 注册项并清理受限任务状态文件；**不删除**你已下载的 MP3）。
+2. 在 `chrome://extensions` 或 `edge://extensions` 中移除本扩展。
+
+---
+
+## 最常见问题排查
+
+| 现象 | 处理 |
+|---|---|
+| 侧边栏提示未安装 / 无法连接本地程序 | 确认扩展 ID 为 `hjccjnbenicffglhjkjgoecbfdjfmafh`；重新双击 `安装本地程序.cmd`；**完全退出并重启**浏览器 |
+| 提示找不到 FFmpeg / ffprobe | 用上面的 `winget` 安装；新开终端执行 `ffmpeg -version`；确认 PATH 后重启浏览器 |
+| 双击安装被 SmartScreen 拦截 | 选「更多信息 → 仍要运行」；发布包未代码签名 |
+| 扩展加载失败或找不到文件 | 确认 ZIP **完整解压**，加载的是包内 `extension` 文件夹 |
+| 扩展图标在当前页不可用 | 必须打开 HTTPS 的 `/episode/` 单集页，不是 `/podcast/` 主页 |
+| 关闭侧栏后再开看不到旧任务 | **预期行为**：一次性任务，浏览器不保存任务 ID；后台若仍在跑会自行完成并清理 |
+| 任务结束后终端窗口自动关了 | **预期行为**：终态短暂展示后清理状态并退出 |
+| 查询已结束任务显示 removed | **预期行为**：状态已删除，不可回溯 |
+
+包内还有离线说明：解压后的 `快速开始.txt`。
+
+---
+
+## 普通用户与开发者
+
+| 身份 | 你需要什么 |
+|---|---|
+| **普通用户** | 只需下载统一 ZIP、按上方步骤安装 FFmpeg / 本地程序 / 扩展，即可使用。**不必**克隆仓库、安装 Python 或运行测试。 |
+| **开发者** | 使用源码、构建 EXE、跑单元测试与打包脚本；见下文「从源码开发」「测试」与「项目结构」。 |
+
+以下内容面向进阶使用与二次开发；普通用户可忽略。
+
+---
+
+## 功能一览
 
 - 只在 `https://www.xiaoyuzhoufm.com/episode/...` 单集页面启用并自动解析
 - 自定义开始、结束时间（`HH:MM:SS`）；结束为 `00:00:00` 表示处理到结尾
@@ -20,61 +124,42 @@
 - 侧边栏显示当前会话中的下载/处理进度，支持取消
 - **不持久化任务 ID**：关闭侧边栏后不会从存储恢复旧任务；后台 worker 与已打开的终端继续运行
 - **单任务本地窗口**：每任务独立控制台、四阶段进度、终态短暂展示后自动退出
+- **一次性生命周期**：成功只留 MP3；失败/取消不留业务产物；无运行日志、无历史清单
 
-## Windows 安装（浏览器扩展）
+浏览器提交任务后，会为该任务打开独立的 Windows 控制台窗口。关闭网页或侧边栏**不会**中断后台 worker；关闭任务窗口只关掉监控界面，不会取消正在下载的 worker。
 
-### 1. 安装 FFmpeg
+---
 
-安装 FFmpeg，并确保在 PowerShell 中以下两条命令都能正常输出版本：
+## 统一安装包内容说明
 
-```powershell
-ffmpeg -version
-ffprobe -version
+`cosmos-broadcast-processor-windows-v1.0.0.zip` 解压后结构：
+
+```text
+cosmos-broadcast-processor-windows-v1.0.0/
+├─ 快速开始.txt
+├─ 安装本地程序.cmd
+├─ 卸载本地程序.cmd
+├─ extension/          ← 浏览器「加载已解压的扩展程序」选这个文件夹
+└─ native_host/
+   ├─ cosmos-native-host.exe
+   ├─ cosmos-task-center.exe
+   ├─ install-host.ps1
+   └─ uninstall-host.ps1
 ```
 
-### 2. 加载扩展
+- `安装本地程序.cmd` / `卸载本地程序.cmd`：双击入口，内部调用 `native_host` 下的 PowerShell 脚本；支持路径含空格；结束后暂停便于阅读，并保留真实退出码。
+- 安装脚本优先使用与 `install-host.ps1` **同目录**的两个 EXE，复制到 `%LOCALAPPDATA%\CosmosBroadcastProcessor`，只写当前用户的 Native Messaging 注册项。
+- **升级前请先等待任务结束。** 安装/卸载只会清理 `jobs` 目录下由 32 位小写 hex `job_id` 派生的状态文件（`<id>.json` / `<id>.cancel` / `<id>.json.tmp`），**不会**删除其它同扩展名文件、MP3 或你的输出目录，也**不会**递归删除整个应用根目录。
+- 不会安装 Windows 服务、开机启动项，不会监听网络端口。
 
-1. 解压发布包中的 `cosmos-browser-extension.zip`。
-2. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`。
-3. 开启“开发者模式”，选择“加载已解压的扩展程序”，选中解压后的文件夹。
-4. 扩展详情中显示的 ID 应为 `hjccjnbenicffglhjkjgoecbfdjfmafh`。
-
-`manifest.json` 内置公钥以保持未打包扩展 ID 固定。本地辅助程序只接受这个 ID 发来的 Native Messaging 连接。
-
-### 3. 注册本地辅助程序
-
-**升级前请先等待所有进行中的下载任务结束。** 安装脚本只会清理 `%LOCALAPPDATA%\CosmosBroadcastProcessor\jobs` 下由 32 位小写 hex `job_id` 派生的状态文件（`<id>.json` / `<id>.cancel` / `<id>.json.tmp`），**不会**删除其它同扩展名文件、MP3 或你的输出目录。
-
-在**扁平发布包**解压目录（与 `install-host.ps1` 同级）打开 PowerShell，运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-host.ps1
-```
-
-从源码仓库开发时，也可在 `native_host` 目录运行（会回退到 `dist\native-host\` 中的 EXE）：
+从源码仓库开发时，也可直接运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\native_host\install-host.ps1
+powershell -ExecutionPolicy Bypass -File .\native_host\uninstall-host.ps1
 ```
 
-默认同时为当前 Windows 用户注册 Chrome 和 Edge，不需要管理员权限。也可只注册一个浏览器：
-
-```powershell
-.\install-host.ps1 -Browser Chrome
-.\install-host.ps1 -Browser Edge
-```
-
-脚本优先使用与 `install-host.ps1` **同目录**的 `cosmos-native-host.exe`（扁平 ZIP），找不到时再回退仓库布局 `dist\native-host\`；并要求同目录存在 `cosmos-task-center.exe`。安装时复制到 `%LOCALAPPDATA%\CosmosBroadcastProcessor`，只写入当前用户的 Native Messaging 注册项。它**不会**安装 Windows 服务、**不会**创建开机启动项、**不会**监听网络端口，也**不会**自动启动任务窗口；**不会**递归删除整个应用目录。
-
-### 4. 使用
-
-1. 打开一个小宇宙 `/episode/` 单集页面。
-2. 点击工具栏中的扩展图标，侧边栏会自动解析当前页面。
-3. 设置裁剪、倍速、音量、目录和文件名，点击“下载并处理”。
-4. 成功创建任务后，会自动弹出**该任务**的本地监控控制台；侧边栏仍可查看**当前会话**中的任务。
-5. 任务成功后，MP3 保留在你选择的输出目录；状态文件会被清理，终端短暂展示后自动退出。
-
-浏览器仅在插件发出 `ping`、解析、启动任务或查询状态时启动辅助程序。每次消息响应后该进程退出；真正的下载/FFmpeg 工作由按任务创建的独立后台 worker 完成。因此关闭侧边栏或切换页面不会中断工作，浏览器完全退出后任务也会继续到完成并自行清理状态。
+（会回退使用 `dist\native-host\` 中的 EXE。）
 
 ### 单任务本地窗口（终端）
 
@@ -92,7 +177,7 @@ powershell -ExecutionPolicy Bypass -File .\native_host\install-host.ps1
 | 会保留历史吗？ | **不会**。无任务列表、无日志、浏览器不持久化 job ID |
 | 会开机自启吗？ | **不会**。没有服务、托盘或开机启动项 |
 
-窗口键盘命令（**无需**序号或短 ID，始终针对当前窗口任务）：
+窗口键盘命令（始终针对当前窗口任务）：
 
 | 命令 | 作用 |
 |---|---|
@@ -102,23 +187,9 @@ powershell -ExecutionPolicy Bypass -File .\native_host\install-host.ps1
 | `h` | 帮助 |
 | `q` | 退出本窗口（**不**取消后台 worker；worker 仍会自行清理） |
 
-进度说明：下载在已知 Content-Length 时显示 0–100%；未知长度时显示已下载 MB 并标记进度未知。FFmpeg 通过官方 `-progress` 输出估算阶段百分比；无法可靠计算时长时显示“进行中”，不伪造连续百分比。
+进度说明：下载在已知 Content-Length 时显示 0–100%；未知长度时显示已下载 MB。FFmpeg 通过官方 `-progress` 输出估算阶段百分比；无法可靠计算时长时显示“进行中”，不伪造连续百分比。
 
-### 卸载
-
-从扁平发布包目录运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall-host.ps1
-```
-
-从源码仓库运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\native_host\uninstall-host.ps1
-```
-
-脚本删除所选浏览器的当前用户注册项、已安装的 host / 任务中心 exe 和 host manifest，并清理 `jobs` 目录下由 32 位小写 hex `job_id` 派生的状态文件（`<id>.json` / `<id>.cancel` / `<id>.json.tmp`）。**不删除**其它同扩展名文件、已下载的 MP3、用户输出目录或整个应用根目录。随后在浏览器扩展管理页移除扩展即可。
+---
 
 ## 架构与安全边界
 
@@ -145,9 +216,11 @@ Chrome / Edge MV3 侧边栏（仅内存 job_id）
 - 任务窗口启动失败**不会**回滚或中断已经创建的下载任务。
 - 运行时不写 `.log`、执行历史、索引、数据库或遥测；Native Messaging 的 stdin/stdout 专用于浏览器协议。
 
+---
+
 ## 从源码开发和构建
 
-桌面版：
+桌面版（原 PyQt6，仍保留）：
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -166,7 +239,18 @@ python -m pip install -r native_host\requirements.txt
 - `dist\native-host\cosmos-native-host.exe`
 - `dist\native-host\cosmos-task-center.exe`
 
-扩展无需编译，发布时把 `extension` 目录内容打成 zip 即可。Windows Host ZIP 必须同时包含两个 EXE、`install-host.ps1`、`uninstall-host.ps1` 和 `README.md`（扁平布局，不含 `.log` / `.handoff`）。
+生成面向普通用户的统一安装包与校验文件：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\package-release.ps1
+```
+
+输出：
+
+- `dist\cosmos-broadcast-processor-windows-v1.0.0.zip`
+- `dist\SHA256SUMS.txt`（仅列出上述统一 ZIP 的 SHA-256）
+
+扩展无需编译；`manifest.json` 内置公钥以保持未打包扩展 ID 固定为 `hjccjnbenicffglhjkjgoecbfdjfmafh`。
 
 开发态可直接运行单任务窗口（`--job-id` 必需）：
 
@@ -181,7 +265,9 @@ python native_host\task_center.py --smoke --job-id <32位hex> --jobs-dir <隔离
 - `COSMOS_TERMINAL_GRACE_SECONDS=0`：worker 终态后立即清理（默认约 2.5 秒）
 - `COSMOS_TASK_CENTER_STARTUP_WAIT`：任务中心等待 job 文件出现的秒数（默认 20）
 
-运行测试和静态检查：
+---
+
+## 测试
 
 ```powershell
 python -m unittest discover -s tests -v
@@ -190,7 +276,16 @@ node tests\test_extension_state.js
 node --check extension\job-state.js
 node --check extension\service-worker.js
 node --check extension\sidepanel.js
+powershell -ExecutionPolicy Bypass -File .\scripts\package-release.ps1
 ```
+
+README 链接审计（开发机）：
+
+```powershell
+python C:\Users\27312\.codex\skills\generate-standard-readme\scripts\audit_readme.py README.md --repo-root . --require-link https://github.com/hyNous/cosmos-broadcast-processor --require-link https://github.com/hyNous/cosmos-broadcast-processor/releases/latest
+```
+
+---
 
 ## 项目结构
 
@@ -200,22 +295,13 @@ native_host/host.py             Native Messaging 协议与命令处理
 native_host/processor.py        URL 校验、下载、任务、FFmpeg 与一次性清理
 native_host/task_center.py      独立控制台任务中心（终态后自动退出）
 native_host/*-host.ps1          构建、当前用户注册和卸载脚本
-tests/                          host、任务中心与扩展状态测试
+release/                        统一安装包内的 CMD 与快速开始源文件
+scripts/package-release.ps1     生成 v1.0.0 统一 ZIP 与 SHA256SUMS
+tests/                          host、任务中心、扩展与发布包测试
 main.py gui.py worker.py        原 PyQt6 桌面版（保留）
 ```
 
-## 故障排查
-
-| 现象 | 处理 |
-|---|---|
-| 侧边栏显示“未安装” | 确认扩展 ID 正确，重新运行 `install-host.ps1`，然后重启浏览器 |
-| 显示找不到 FFmpeg | 确认 `ffmpeg` 和 `ffprobe` 已加入 PATH；注册后重启浏览器以获取新环境变量 |
-| 扩展图标在当前页面不可用 | 确认地址是 HTTPS 的小宇宙 `/episode/` 单集页，而非 `/podcast/` 主页 |
-| 页面解析失败 | 单集可能下架/受限，或页面结构变化；先在浏览器确认页面可公开播放 |
-| 关闭侧栏后重新打开看不到旧任务 | 预期行为：一次性任务，浏览器不持久化 job ID；worker 若仍在运行会自行完成并清理 |
-| 任务窗口没有弹出 | 确认已构建/安装 `cosmos-task-center.exe`；侧边栏仅在**当前会话有进行中任务**时可「打开本地任务中心」 |
-| 任务结束后窗口自动关了 | 预期行为：终态短暂展示后状态清理，窗口自动退出 |
-| 查询已结束任务显示 removed | 预期行为：状态已清理，不可回溯 |
+---
 
 ## 已知限制
 
@@ -224,7 +310,9 @@ main.py gui.py worker.py        原 PyQt6 桌面版（保留）
 - Native Host 仅按消息按需启动，不会常驻服务或监听端口；真正工作由独立 worker 完成。
 - 任务窗口为本地控制台监控（每任务一个），不是托盘/服务，也不会开机启动。
 - 任务状态为一次性：终态后删除；卸载/安装仅清理 `jobs` 状态文件，不删除用户 MP3。
-- 浏览器内侧边栏外观与真实注册流程需在本机手动加载扩展并运行安装脚本验证；自动化测试覆盖协议、安全校验、一次性清理、单任务窗口逻辑、阶段进度和端到端处理链路。
+- 浏览器内侧边栏外观与真实注册流程需在本机手动加载扩展并运行安装脚本验证；自动化测试覆盖协议、安全校验、一次性清理、单任务窗口逻辑、阶段进度、发布包清单和端到端处理链路。
+
+---
 
 ## 许可证
 
