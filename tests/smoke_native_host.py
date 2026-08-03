@@ -51,6 +51,7 @@ def main() -> int:
         output_dir = root / "output"
         output_dir.mkdir()
         REQUEST_ENV["LOCALAPPDATA"] = str(root / "state")
+        REQUEST_ENV.pop("COSMOS_APP_DATA_DIR", None)
 
         ping = request({"command": "ping"})
         parsed = request({"command": "parse", "url": sys.argv[1]})

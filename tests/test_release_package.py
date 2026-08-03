@@ -1,4 +1,4 @@
-"""Tests for the v1.0.0 unified Windows release package and packaging script."""
+"""Tests for the v1.0.1 unified Windows release package and packaging script."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-PACKAGE_NAME = "cosmos-broadcast-processor-windows-v1.0.0"
+PACKAGE_NAME = "cosmos-broadcast-processor-windows-v1.0.1"
 ZIP_NAME = f"{PACKAGE_NAME}.zip"
 ZIP_PATH = REPO / "dist" / ZIP_NAME
 SUMS_PATH = REPO / "dist" / "SHA256SUMS.txt"
@@ -110,6 +110,10 @@ class ReadmeFirstPathTests(unittest.TestCase):
         self.assertIn("chrome://extensions", self.text)
         self.assertIn("edge://extensions", self.text)
         self.assertIn("extension", self.text)
+        self.assertIn(
+            r"%LOCALAPPDATA%\CosmosBroadcastProcessor\extension",
+            self.text,
+        )
         self.assertIn(EXTENSION_ID, self.text)
         self.assertIn("SmartScreen", self.text)
         self.assertIn("完全退出", self.text)
@@ -153,6 +157,10 @@ class ReleaseSourceAssetsTests(unittest.TestCase):
         self.assertIn("chrome://extensions", text)
         self.assertIn("edge://extensions", text)
         self.assertIn("extension", text)
+        self.assertIn(
+            r"%LOCALAPPDATA%\CosmosBroadcastProcessor\extension",
+            text,
+        )
         self.assertIn(EXTENSION_ID, text)
         self.assertIn("卸载本地程序.cmd", text)
         self.assertIn(RELEASE_LATEST, text)
@@ -255,7 +263,7 @@ class UnifiedZipTests(unittest.TestCase):
             manifest = zf.read(f"{PACKAGE_NAME}/extension/manifest.json").decode(
                 "utf-8"
             )
-            self.assertIn('"version": "1.0.0"', manifest)
+            self.assertIn('"version": "1.0.1"', manifest)
             self.assertIn("key", manifest)
 
             host_src = REPO / "dist" / "native-host" / "cosmos-native-host.exe"
@@ -324,6 +332,31 @@ class InstallScriptBesideExeLayoutTests(unittest.TestCase):
         self.assertIn("cosmos-task-center.exe", text)
         # task center sourced from parent of resolved host exe (= same dir when flat/subdir).
         self.assertIn("Split-Path -Parent $resolvedExe", text)
+
+    def test_install_script_copies_exact_extension_files_to_stable_directory(self) -> None:
+        text = (REPO / "native_host" / "install-host.ps1").read_text(encoding="utf-8-sig")
+        uninstall = (REPO / "native_host" / "uninstall-host.ps1").read_text(encoding="utf-8-sig")
+        self.assertIn('$installedExtensionDir = Join-Path $installDir "extension"', text)
+        self.assertIn('[string]$InstallDir = ""', text)
+        self.assertIn('COSMOS_APP_DATA_DIR', text)
+        for name in (
+            "job-state.js",
+            "manifest.json",
+            "service-worker.js",
+            "sidepanel.css",
+            "sidepanel.html",
+            "sidepanel.js",
+        ):
+            self.assertIn(f'"{name}"', text)
+        self.assertIn("foreach ($name in $extensionFiles)", text)
+        self.assertNotIn(
+            "Copy-Item -LiteralPath $extensionSource -Destination $installedExtensionDir -Recurse",
+            text,
+        )
+        self.assertIn("foreach ($name in $extensionFiles)", uninstall)
+        self.assertIn('[string]$InstallDir = ""', uninstall)
+        self.assertIn('COSMOS_APP_DATA_DIR', uninstall)
+        self.assertNotIn("Remove-Item -LiteralPath $installedExtensionDir -Recurse", uninstall)
 
 
 if __name__ == "__main__":

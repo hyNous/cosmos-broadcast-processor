@@ -253,7 +253,7 @@ def handle_message(message: dict[str, Any]) -> dict[str, Any]:
             pass
         return {
             "ok": True,
-            "version": "1.0.0",
+            "version": "1.0.1",
             "default_output_dir": str(default_output_dir()),
             "ffmpeg_available": bool(find_tool("ffmpeg")),
             "ffprobe_available": bool(find_tool("ffprobe")),

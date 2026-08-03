@@ -13,7 +13,7 @@
 1. 打开最新发布页：
    **[https://github.com/hyNous/cosmos-broadcast-processor/releases/latest](https://github.com/hyNous/cosmos-broadcast-processor/releases/latest)**
 2. 在 **Assets** 中下载：
-   **`cosmos-broadcast-processor-windows-v1.0.0.zip`**
+   **`cosmos-broadcast-processor-windows-v1.0.1.zip`**
 3. **不要**下载 GitHub 自动生成的 “Source code (zip/tar.gz)”——那是源码，不是安装包。
 
 将 ZIP **完整解压**到任意文件夹（例如桌面），保持文件夹结构不要只解压其中几个文件。
@@ -50,8 +50,18 @@ ffprobe -version
 
 1. Chrome 地址栏打开 `chrome://extensions`，或 Edge 打开 `edge://extensions`。
 2. 打开右上角 **开发者模式**。
-3. 点击 **加载已解压的扩展程序**，选择解压目录里的 **`extension`** 文件夹（选中该文件夹本身，不要只选里面的某个文件）。
+3. 点击 **加载已解压的扩展程序**，选择 **`%LOCALAPPDATA%\CosmosBroadcastProcessor\extension`**（可在文件夹选择窗口地址栏粘贴此路径）。
 4. 扩展详情中显示的 ID 应为：`hjccjnbenicffglhjkjgoecbfdjfmafh`。
+
+安装脚本已将扩展复制到稳定目录。安装完成后可以删除下载的 ZIP 和解压目录；不要删除上述 `%LOCALAPPDATA%` 稳定目录。
+
+如需把运行目录放到其他磁盘（例如 E 盘），在完整解压目录中执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\native_host\install-host.ps1 -InstallDir "E:\脚本工具\小宇宙播客\CosmosBroadcastProcessor"
+```
+
+安装脚本会记住这个目录；以后直接双击安装入口也会继续使用 E 盘。浏览器扩展应加载该目录下的 `extension` 文件夹。
 
 ### 步骤 4：完全退出并重启浏览器
 
@@ -74,9 +84,9 @@ ffprobe -version
 ### 升级
 
 1. **先等待所有正在进行的下载任务结束**（升级安装会清理旧任务状态文件，不会删你的 MP3）。
-2. 下载新版本统一 ZIP，**覆盖解压**到同一位置（或解压到新目录）。
+2. 下载新版本统一 ZIP 并完整解压。
 3. 再双击一次 `安装本地程序.cmd`。
-4. 若扩展文件有更新：在扩展管理页对已加载扩展点**重新加载**，或移除后重新「加载已解压的扩展程序」指向新的 `extension` 文件夹。
+4. 在扩展管理页对已加载扩展点**重新加载**。若从 `v1.0.0` 升级，或旧解压目录已经删除：先移除旧扩展，再从 `%LOCALAPPDATA%\CosmosBroadcastProcessor\extension` 加载一次。
 5. 完全退出并重启浏览器。
 
 ### 卸载
@@ -93,7 +103,7 @@ ffprobe -version
 | 侧边栏提示未安装 / 无法连接本地程序 | 确认扩展 ID 为 `hjccjnbenicffglhjkjgoecbfdjfmafh`；重新双击 `安装本地程序.cmd`；**完全退出并重启**浏览器 |
 | 提示找不到 FFmpeg / ffprobe | 用上面的 `winget` 安装；新开终端执行 `ffmpeg -version`；确认 PATH 后重启浏览器 |
 | 双击安装被 SmartScreen 拦截 | 选「更多信息 → 仍要运行」；发布包未代码签名 |
-| 扩展加载失败或找不到文件 | 确认 ZIP **完整解压**，加载的是包内 `extension` 文件夹 |
+| 扩展加载失败或找不到文件 | 重新运行 `安装本地程序.cmd`，加载 `%LOCALAPPDATA%\CosmosBroadcastProcessor\extension` |
 | 扩展图标在当前页不可用 | 必须打开 HTTPS 的 `/episode/` 单集页，不是 `/podcast/` 主页 |
 | 关闭侧栏后再开看不到旧任务 | **预期行为**：一次性任务，浏览器不保存任务 ID；后台若仍在跑会自行完成并清理 |
 | 任务结束后终端窗口自动关了 | **预期行为**：终态短暂展示后清理状态并退出 |
@@ -132,14 +142,14 @@ ffprobe -version
 
 ## 统一安装包内容说明
 
-`cosmos-broadcast-processor-windows-v1.0.0.zip` 解压后结构：
+`cosmos-broadcast-processor-windows-v1.0.1.zip` 解压后结构：
 
 ```text
-cosmos-broadcast-processor-windows-v1.0.0/
+cosmos-broadcast-processor-windows-v1.0.1/
 ├─ 快速开始.txt
 ├─ 安装本地程序.cmd
 ├─ 卸载本地程序.cmd
-├─ extension/          ← 浏览器「加载已解压的扩展程序」选这个文件夹
+├─ extension/          ← 安装脚本会把这 6 个文件复制到稳定目录
 └─ native_host/
    ├─ cosmos-native-host.exe
    ├─ cosmos-task-center.exe
@@ -148,7 +158,7 @@ cosmos-broadcast-processor-windows-v1.0.0/
 ```
 
 - `安装本地程序.cmd` / `卸载本地程序.cmd`：双击入口，内部调用 `native_host` 下的 PowerShell 脚本；支持路径含空格；结束后暂停便于阅读，并保留真实退出码。
-- 安装脚本优先使用与 `install-host.ps1` **同目录**的两个 EXE，复制到 `%LOCALAPPDATA%\CosmosBroadcastProcessor`，只写当前用户的 Native Messaging 注册项。
+- 安装脚本把两个 EXE 和固定 6 个扩展文件复制到 `%LOCALAPPDATA%\CosmosBroadcastProcessor`，只写当前用户的 Native Messaging 注册项；浏览器加载其中的 `extension` 子目录。
 - **升级前请先等待任务结束。** 安装/卸载只会清理 `jobs` 目录下由 32 位小写 hex `job_id` 派生的状态文件（`<id>.json` / `<id>.cancel` / `<id>.json.tmp`），**不会**删除其它同扩展名文件、MP3 或你的输出目录，也**不会**递归删除整个应用根目录。
 - 不会安装 Windows 服务、开机启动项，不会监听网络端口。
 
@@ -247,7 +257,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\package-release.ps1
 
 输出：
 
-- `dist\cosmos-broadcast-processor-windows-v1.0.0.zip`
+- `dist\cosmos-broadcast-processor-windows-v1.0.1.zip`
 - `dist\SHA256SUMS.txt`（仅列出上述统一 ZIP 的 SHA-256）
 
 扩展无需编译；`manifest.json` 内置公钥以保持未打包扩展 ID 固定为 `hjccjnbenicffglhjkjgoecbfdjfmafh`。
@@ -296,7 +306,7 @@ native_host/processor.py        URL 校验、下载、任务、FFmpeg 与一次�
 native_host/task_center.py      独立控制台任务中心（终态后自动退出）
 native_host/*-host.ps1          构建、当前用户注册和卸载脚本
 release/                        统一安装包内的 CMD 与快速开始源文件
-scripts/package-release.ps1     生成 v1.0.0 统一 ZIP 与 SHA256SUMS
+scripts/package-release.ps1     生成 v1.0.1 统一 ZIP 与 SHA256SUMS
 tests/                          host、任务中心、扩展与发布包测试
 main.py gui.py worker.py        原 PyQt6 桌面版（保留）
 ```

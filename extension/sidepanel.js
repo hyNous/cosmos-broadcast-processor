@@ -102,7 +102,7 @@ async function detectHost() {
     hostAvailable = false;
     elements.hostBadge.textContent = "未安装";
     elements.hostBadge.className = "badge offline";
-    setError(`无法连接本地辅助程序：${error.message}。请先运行 native_host/install-host.ps1。`);
+    setError(`无法连接本地辅助程序：${error.message}。请重新运行安装包中的“安装本地程序.cmd”，再完全重启浏览器。`);
   }
   elements.downloadButton.disabled = !hostAvailable || !episode;
   refreshTaskCenterButton();

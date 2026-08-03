@@ -34,11 +34,15 @@ def utc_now() -> str:
 
 
 def app_data_dir() -> Path:
-    if os.name == "nt":
-        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
+    configured = os.environ.get("COSMOS_APP_DATA_DIR")
+    if configured:
+        path = Path(configured).expanduser()
     else:
-        base = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
-    path = base / APP_DIR_NAME
+        if os.name == "nt":
+            base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
+        else:
+            base = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
+        path = base / APP_DIR_NAME
     path.mkdir(parents=True, exist_ok=True)
     return path
 

@@ -16,6 +16,7 @@ from native_host.processor import (
     STAGE_PROCESS,
     TERMINAL_GRACE_ENV,
     atomic_write_json,
+    app_data_dir,
     build_atempo,
     build_ffmpeg_command,
     cancel_path,
@@ -50,6 +51,13 @@ class ProtocolTests(unittest.TestCase):
         stream = io.BytesIO(struct.pack("<I", 1024 * 1024 + 1))
         with self.assertRaisesRegex(ValueError, "消息大小"):
             read_message(stream)
+
+    def test_app_data_dir_honors_migration_override(self):
+        with tempfile.TemporaryDirectory() as directory:
+            custom = Path(directory) / "migrated" / "CosmosBroadcastProcessor"
+            with mock.patch.dict(os.environ, {"COSMOS_APP_DATA_DIR": str(custom)}):
+                self.assertEqual(app_data_dir(), custom)
+            self.assertTrue(custom.is_dir())
 
 
 class ValidationTests(unittest.TestCase):

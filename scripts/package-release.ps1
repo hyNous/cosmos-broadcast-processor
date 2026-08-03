@@ -1,11 +1,11 @@
 ﻿#Requires -Version 5.1
-# Build unified Windows end-user release ZIP for v1.0.0.
-# Only overwrites dist\cosmos-broadcast-processor-windows-v1.0.0.zip and dist\SHA256SUMS.txt.
+# Build unified Windows end-user release ZIP for v1.0.1.
+# Only overwrites dist\cosmos-broadcast-processor-windows-v1.0.1.zip and dist\SHA256SUMS.txt.
 # Uses a private temp staging dir; never deletes repo root or entire dist/.
 
 $ErrorActionPreference = "Stop"
 
-$Version = "1.0.0"
+$Version = "1.0.1"
 $PackageName = "cosmos-broadcast-processor-windows-v$Version"
 $ZipFileName = "$PackageName.zip"
 

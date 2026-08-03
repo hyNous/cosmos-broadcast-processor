@@ -27,8 +27,17 @@
 1. Chrome 打开：  chrome://extensions
    Edge   打开：  edge://extensions
 2. 打开右上角「开发者模式」。
-3. 点击「加载已解压的扩展程序」，选择本目录下的 extension 文件夹。
+3. 点击「加载已解压的扩展程序」，选择：
+   %LOCALAPPDATA%\CosmosBroadcastProcessor\extension
+   （可在文件夹选择窗口的地址栏中粘贴此路径。）
 4. 扩展 ID 应为：hjccjnbenicffglhjkjgoecbfdjfmafh
+5. 安装完成后，可以删除下载的 ZIP 和解压目录；不要删除上面的稳定目录。
+
+如需把运行目录放到其他磁盘（例如 E 盘），可在本目录打开 PowerShell 执行：
+
+   powershell -ExecutionPolicy Bypass -File .\native_host\install-host.ps1 -InstallDir "E:\脚本工具\小宇宙播客\CosmosBroadcastProcessor"
+
+安装脚本会记住该目录；以后直接运行安装入口也会继续使用 E 盘。
 
 四、完全退出并重启浏览器
 ------------------------
@@ -45,9 +54,11 @@
 升级
 ----
 1. 先等待所有下载任务结束。
-2. 用新版本 ZIP 覆盖解压（或解压到新目录）。
+2. 完整解压新版本 ZIP。
 3. 再双击一次「安装本地程序.cmd」。
-4. 在扩展管理页重新加载扩展（或重新加载 extension 文件夹）。
+4. 在扩展管理页点击扩展的「重新加载」。
+   若从 v1.0.0 升级，或旧解压目录已经删除：先移除旧扩展，再从
+   %LOCALAPPDATA%\CosmosBroadcastProcessor\extension 加载一次。
 5. 完全退出并重启浏览器。
 
 卸载
@@ -60,13 +71,13 @@
 --------
 - 连不上本地程序：确认扩展 ID、重新运行安装 CMD、完全重启浏览器。
 - 找不到 FFmpeg：重新安装并确认 PATH，然后重启浏览器。
-- 扩展加载失败：确认 ZIP 已完整解压，选择的是 extension 文件夹。
+- 扩展加载失败：重新运行安装 CMD，再加载 %LOCALAPPDATA%\CosmosBroadcastProcessor\extension。
 - 当前页扩展不可用：必须是 https 的 /episode/ 单集页。
 - 关闭侧栏后看不到旧任务：这是预期行为（一次性任务，不保存历史）。
 
 项目主页：https://github.com/hyNous/cosmos-broadcast-processor
 最新下载：https://github.com/hyNous/cosmos-broadcast-processor/releases/latest
-Assets 中下载：cosmos-broadcast-processor-windows-v1.0.0.zip
+Assets 中下载：cosmos-broadcast-processor-windows-v1.0.1.zip
 （不要下载 GitHub 自动生成的 Source code。）
 
 许可证：MIT
